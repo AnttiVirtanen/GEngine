@@ -1,0 +1,63 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <Filter Include="Assets">
+      <UniqueIdentifier>a8a37833-491c-4a06-833b-a220c3d96e2f</UniqueIdentifier>
+      <Extensions>ico;cur;bmp;dds;dlg;fbx;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tga;tiff;tif;png;wav;mfcribbon-ms</Extensions>
+    </Filter>
+    <Filter Include="engine">
+      <UniqueIdentifier>{98a9e69c-baa9-4c85-93f8-83af1d163ef0}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="engine\shapes">
+      <UniqueIdentifier>{8495d53b-4b23-43e2-bb3c-5a0324f53cfd}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="pch.h" />
+    <ClInclude Include="Game.h" />
+    <ClInclude Include="StepTimer.h" />
+    <ClInclude Include="Cube.h">
+      <Filter>engine\shapes</Filter>
+    </ClInclude>
+    <ClInclude Include="Drawable.h">
+      <Filter>engine</Filter>
+    </ClInclude>
+    <ClInclude Include="Camera.h">
+      <Filter>engine</Filter>
+    </ClInclude>
+    <ClInclude Include="Graphics.h">
+      <Filter>engine</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="pch.cpp" />
+    <ClCompile Include="Game.cpp" />
+    <ClCompile Include="Main.cpp" />
+    <ClCompile Include="Cube.cpp">
+      <Filter>engine\shapes</Filter>
+    </ClCompile>
+    <ClCompile Include="Drawable.cpp">
+      <Filter>engine</Filter>
+    </ClCompile>
+    <ClCompile Include="Camera.cpp">
+      <Filter>engine</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <ResourceCompile Include="resource.rc" />
+  </ItemGroup>
+  <ItemGroup>
+    <Image Include="directx.ico">
+      <Filter>Assets</Filter>
+    </Image>
+  </ItemGroup>
+  <ItemGroup>
+    <Manifest Include="settings.manifest">
+      <Filter>Assets</Filter>
+    </Manifest>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="packages.config" />
+    <None Include="Shaders.shader" />
+  </ItemGroup>
+</Project>
