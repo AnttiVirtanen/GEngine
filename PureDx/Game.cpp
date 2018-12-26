@@ -3,6 +3,7 @@
 #include "Graphics.h"
 #include <d3dcompiler.h>
 
+
 // Since d3dcompiler.lib is not directly added as dependency to linker add it manually
 #pragma comment(lib,"d3dcompiler.lib")
 
