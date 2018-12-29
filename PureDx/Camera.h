@@ -13,6 +13,7 @@ namespace GEngine {
 		XMMATRIX getProjectViewTransformation();
 		
 		void setPosition(float x, float y, float z);
+		void moveCamera(float x, float y, float z);
 	private:
 		float m_aspectRatio;
 		float m_fieldOfView;

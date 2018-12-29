@@ -6,12 +6,8 @@ using std::vector;
 namespace GEngine {
 	template <typename T> class Renderer {
 	public:
-		void addToBatch(T mesh) {
-			m_batch.push_back(mesh);
-		};
-
-		void render(ID3D11DeviceContext1* context, ID3D11Buffer* buffer) {
-			for(auto mesh: m_batch) {
+		void render(vector<T> meshes, ID3D11DeviceContext1* context, ID3D11Buffer* buffer) {
+			for(auto mesh: meshes) {
 				D3D11_MAPPED_SUBRESOURCE vertexSubResource;
 
 				auto vertices = mesh.getVertices();
@@ -22,9 +18,6 @@ namespace GEngine {
 				context->DrawIndexed(mesh.indexCount(), 0, 0);
 			}
 		}
-
-	private:
-		vector<T> m_batch;
 	};
 }
 

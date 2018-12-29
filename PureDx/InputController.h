@@ -6,6 +6,8 @@ namespace GEngine {
 	enum CONTROLS {
 		leftArrow = VK_LEFT,
 		rightArrow = VK_RIGHT,
+		upArrow = VK_UP,
+		downArrow = VK_DOWN,
 		ctrl = VK_CONTROL,
 		space = VK_SPACE,
 		multikeys = VK_MULTIPLEKEYSDOWN,
@@ -17,8 +19,8 @@ namespace GEngine {
 	public:
 		static InputController* getInstance();
 		void setControlKey(CONTROLS controlKey);
+		CONTROLS getControlKey();
 		void releaseControl();
-		bool isBeingControlled();
 	private:
 		CONTROLS m_controlKey;
 		static InputController* instance;

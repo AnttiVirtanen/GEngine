@@ -13,17 +13,14 @@ using namespace DirectX;
 using namespace GEngine;
 using Microsoft::WRL::ComPtr;
 
-InputController* InputController::instance = nullptr;
-
 Game::Game() noexcept : m_window(nullptr), m_outputWidth(800),
 m_outputHeight(600), m_featureLevel(D3D_FEATURE_LEVEL_9_1) {
 
-	m_inputController = InputController::getInstance();
 	m_camera = Camera(60, static_cast<float>(m_outputWidth / m_outputHeight));
 	m_camera.setPosition(0, 0, -2.5f);
 
-	m_meshRenderer.addToBatch(Cube(XMFLOAT3(0.5, 0.5, 0.5)));
-	m_meshRenderer.addToBatch(Cube(XMFLOAT3(-1.0, 0.5, 0)));
+	m_meshes.push_back(Cube(XMFLOAT3(0.5, 0.5, 0.5)));
+	m_meshes.push_back(Cube(XMFLOAT3(-1.0, 0.5, 0)));
 }
 
 void Game::Initialize(HWND window, int width, int height)
@@ -50,6 +47,7 @@ void Game::Tick()
 void Game::Update(DX::StepTimer const& timer)
 {
 	float elapsedTime = float(timer.GetElapsedSeconds());
+
 }
 
 void Game::initializePipeline() {
@@ -121,13 +119,31 @@ void Game::CreateBuffers() {
 }
 
 void Game::onKeyDown(WPARAM wParam) {
-	CONTROLS controlKey = static_cast<CONTROLS>(wParam);
-	m_inputController->setControlKey(controlKey);
+	m_inputHandler.setControl(wParam);
+
+	// Proto, move this
+	CONTROLS controlKey = m_inputHandler.getControl();
+
+	switch (controlKey) {
+	case CONTROLS::leftArrow:
+		m_camera.moveCamera(-0.1f, 0.0f, 0.0f);
+		break;
+	case CONTROLS::rightArrow:
+		m_camera.moveCamera(0.1f, 0.0f, 0.0f);
+		break;
+	case CONTROLS::upArrow:
+		m_camera.moveCamera(0.0f, 0.0f, 0.1f);
+		break;
+	case CONTROLS::downArrow:
+		m_camera.moveCamera(0.0f, 0.0f, -0.1f);
+		break;
+	}
+
 }
 
 void Game::onReleaseKey()
 {
-	m_inputController->releaseControl();
+	m_inputHandler.releaseControl();
 }
 
 void Game::Render()
@@ -144,7 +160,7 @@ void Game::Render()
 	m_d3dContext->IASetIndexBuffer(m_indexBuffer.Get(), DXGI_FORMAT_R32_UINT, 0);
 	m_d3dContext->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
 
-	m_meshRenderer.render(m_d3dContext.Get(), m_vertexBuffer.Get());
+	m_meshRenderer.render(m_meshes, m_d3dContext.Get(), m_vertexBuffer.Get());
 
 	Present();
 }

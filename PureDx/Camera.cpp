@@ -35,6 +35,11 @@ void Camera::setPosition(float x, float y, float z)
 	m_position = XMVectorSet(x, y, z, 0);
 }
 
+void Camera::moveCamera(float x, float y, float z)
+{
+	m_position = m_position + XMVectorSet(x, y, z, 0);
+}
+
 XMMATRIX Camera::getCameraTransformation()
 {
 	return XMMatrixLookAtLH(m_position, m_target, m_up);

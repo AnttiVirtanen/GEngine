@@ -34,6 +34,12 @@
     <ClInclude Include="InputController.h">
       <Filter>engine</Filter>
     </ClInclude>
+    <ClInclude Include="InputHandler.h">
+      <Filter>engine</Filter>
+    </ClInclude>
+    <ClInclude Include="CameraHandler.h">
+      <Filter>engine</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="pch.cpp" />
@@ -49,6 +55,9 @@
       <Filter>engine</Filter>
     </ClCompile>
     <ClCompile Include="InputController.cpp">
+      <Filter>engine</Filter>
+    </ClCompile>
+    <ClCompile Include="InputHandler.cpp">
       <Filter>engine</Filter>
     </ClCompile>
   </ItemGroup>

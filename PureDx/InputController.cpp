@@ -18,15 +18,16 @@ void InputController::setControlKey(CONTROLS controlKey)
 	m_controlKey = controlKey;
 }
 
+CONTROLS InputController::getControlKey()
+{
+	return m_controlKey;
+}
+
 void InputController::releaseControl()
 {
 	m_controlKey = CONTROLS::released;
 }
 
-bool InputController::isBeingControlled()
-{
-	return m_controlKey != CONTROLS::released;
-}
 
 InputController::~InputController()
 {
