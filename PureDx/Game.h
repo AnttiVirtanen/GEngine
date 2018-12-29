@@ -26,7 +26,9 @@ private:
 
     void Update(DX::StepTimer const& timer);
 	void initializePipeline();
-    void Render();
+	XMMATRIX getWorldTransformation();
+	ConstantBufferPerObject getConstantBufferObject();
+	void Render();
 
     void Clear();
     void Present();
@@ -58,7 +60,7 @@ private:
 	// Testing purposes
 	Cube m_cube;
 	Camera m_camera;
-	Renderer<Drawable> m_meshRenderer;
+	Renderer m_renderer;
 	InputHandler m_inputHandler;
 	vector<Drawable> m_meshes;
 

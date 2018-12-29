@@ -73,13 +73,6 @@ void Game::initializePipeline() {
 }
 
 void Game::CreateBuffers() {
-	XMMATRIX cameraTransformation = m_camera.getProjectViewTransformation();
-	XMMATRIX worldTranformation = DirectX::XMMatrixRotationY(DirectX::XMConvertToRadians(30));
-	XMMATRIX transformation = worldTranformation * cameraTransformation;
-
-	GEngine::ConstantBufferPerObject cbpo;
-	cbpo.worldViewProjectMatrix = DirectX::XMMatrixTranspose(transformation);
-
 	D3D11_BUFFER_DESC vertexBufferDesc;
 	ZeroMemory(&vertexBufferDesc, sizeof(vertexBufferDesc));
 	vertexBufferDesc.Usage = D3D11_USAGE_DYNAMIC;
@@ -109,13 +102,10 @@ void Game::CreateBuffers() {
 	auto indices = m_cube.getIndices();
 	indexData.pSysMem = &indices[0];
 
-	D3D11_SUBRESOURCE_DATA constantData;
-	ZeroMemory(&constantData, sizeof(constantData));
-	constantData.pSysMem = &cbpo;
-
 	m_d3dDevice->CreateBuffer(&vertexBufferDesc, nullptr, m_vertexBuffer.GetAddressOf());
+	m_d3dDevice->CreateBuffer(&constantBufferDesc, nullptr, m_constantBuffer.GetAddressOf());
+
 	m_d3dDevice->CreateBuffer(&indexBufferDesc, &indexData, m_indexBuffer.GetAddressOf());
-	m_d3dDevice->CreateBuffer(&constantBufferDesc, &constantData, m_constantBuffer.GetAddressOf());
 }
 
 void Game::onKeyDown(WPARAM wParam) {
@@ -146,6 +136,24 @@ void Game::onReleaseKey()
 	m_inputHandler.releaseControl();
 }
 
+// Scene method
+XMMATRIX Game::getWorldTransformation() {
+	XMMATRIX cameraTransformation = m_camera.getProjectViewTransformation();
+	XMMATRIX worldTranformation = DirectX::XMMatrixRotationY(DirectX::XMConvertToRadians(30));
+	XMMATRIX transformation = worldTranformation * cameraTransformation;
+	
+	return transformation;
+}
+
+// Scene method
+ConstantBufferPerObject Game::getConstantBufferObject() {
+	XMMATRIX transformation = getWorldTransformation();
+	ConstantBufferPerObject cbpo;
+	cbpo.worldViewProjectMatrix = DirectX::XMMatrixTranspose(transformation);
+
+	return cbpo;
+}
+
 void Game::Render()
 {
 	if (m_timer.GetFrameCount() == 0) { return; }
@@ -160,7 +168,10 @@ void Game::Render()
 	m_d3dContext->IASetIndexBuffer(m_indexBuffer.Get(), DXGI_FORMAT_R32_UINT, 0);
 	m_d3dContext->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
 
-	m_meshRenderer.render(m_meshes, m_d3dContext.Get(), m_vertexBuffer.Get());
+	ConstantBufferPerObject cbpo = getConstantBufferObject();
+
+	m_renderer.mapToBuffer(m_d3dContext.Get(), m_constantBuffer.Get(), &cbpo, sizeof(cbpo));
+	m_renderer.render(m_meshes, m_d3dContext.Get(), m_vertexBuffer.Get());
 
 	Present();
 }
