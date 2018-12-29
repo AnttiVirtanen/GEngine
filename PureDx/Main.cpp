@@ -30,11 +30,11 @@ int WINAPI wWinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance, 
         wcex.style = CS_HREDRAW | CS_VREDRAW;
         wcex.lpfnWndProc = WndProc;
         wcex.hInstance = hInstance;
-        wcex.hIcon = LoadIcon(hInstance, L"IDI_ICON");
-        wcex.hCursor = LoadCursor(nullptr, IDC_ARROW);
+        wcex.hIcon = 0;
+		wcex.hIconSm = 0;
+		wcex.hCursor = LoadCursor(nullptr, IDC_ARROW);
         wcex.hbrBackground = (HBRUSH) (COLOR_WINDOW + 1);
         wcex.lpszClassName = L"PureDxWindowClass";
-        wcex.hIconSm = LoadIcon(wcex.hInstance, L"IDI_ICON");
         if (!RegisterClassEx(&wcex))
             return 1;
 

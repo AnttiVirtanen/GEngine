@@ -17,6 +17,7 @@ InputController* InputController::instance = nullptr;
 
 Game::Game() noexcept : m_window(nullptr), m_outputWidth(800),
 m_outputHeight(600), m_featureLevel(D3D_FEATURE_LEVEL_9_1) {
+
 	m_inputController = InputController::getInstance();
 	m_camera = Camera(60, static_cast<float>(m_outputWidth / m_outputHeight));
 	m_camera.setPosition(0, 0, -2.5f);
