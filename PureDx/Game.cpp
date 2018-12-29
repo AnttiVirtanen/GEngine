@@ -13,10 +13,16 @@ using namespace DirectX;
 using namespace GEngine;
 using Microsoft::WRL::ComPtr;
 
+InputController* InputController::instance = nullptr;
+
 Game::Game() noexcept : m_window(nullptr), m_outputWidth(800),
 m_outputHeight(600), m_featureLevel(D3D_FEATURE_LEVEL_9_1) {
+	m_inputController = InputController::getInstance();
 	m_camera = Camera(60, static_cast<float>(m_outputWidth / m_outputHeight));
 	m_camera.setPosition(0, 0, -2.5f);
+
+	m_meshRenderer.addToBatch(Cube(XMFLOAT3(0.5, 0.5, 0.5)));
+	m_meshRenderer.addToBatch(Cube(XMFLOAT3(-1.0, 0.5, 0)));
 }
 
 void Game::Initialize(HWND window, int width, int height)
@@ -113,6 +119,16 @@ void Game::CreateBuffers() {
 	m_d3dDevice->CreateBuffer(&constantBufferDesc, &constantData, m_constantBuffer.GetAddressOf());
 }
 
+void Game::onKeyDown(WPARAM wParam) {
+	CONTROLS controlKey = static_cast<CONTROLS>(wParam);
+	m_inputController->setControlKey(controlKey);
+}
+
+void Game::onReleaseKey()
+{
+	m_inputController->releaseControl();
+}
+
 void Game::Render()
 {
 	if (m_timer.GetFrameCount() == 0) { return; }
@@ -122,21 +138,12 @@ void Game::Render()
 	UINT stride = sizeof(Vertex);
 	UINT offset = 0;
 
-	Cube cube = Cube(XMFLOAT3(0.5, 0.5, 0));
-	auto vertices = cube.getVertices();
-
-	D3D11_MAPPED_SUBRESOURCE vertexSubResource;
-	
-	m_d3dContext->Map(m_vertexBuffer.Get(), 0, D3D11_MAP_WRITE_DISCARD, 0, &vertexSubResource);
-	memcpy(vertexSubResource.pData, vertices.data(), sizeof(*vertices.data())*vertices.size());
-	m_d3dContext->Unmap(m_vertexBuffer.Get(), 0);
-
 	m_d3dContext->VSSetConstantBuffers(0, 1, m_constantBuffer.GetAddressOf());
 	m_d3dContext->IASetVertexBuffers(0, 1, m_vertexBuffer.GetAddressOf(), &stride, &offset);
 	m_d3dContext->IASetIndexBuffer(m_indexBuffer.Get(), DXGI_FORMAT_R32_UINT, 0);
 	m_d3dContext->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
-	
-	m_d3dContext->DrawIndexed(36, 0, 0);
+
+	m_meshRenderer.render(m_d3dContext.Get(), m_vertexBuffer.Get());
 
 	Present();
 }
