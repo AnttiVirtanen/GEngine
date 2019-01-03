@@ -108,6 +108,13 @@ void Game::CreateBuffers() {
 	m_d3dDevice->CreateBuffer(&indexBufferDesc, &indexData, m_indexBuffer.GetAddressOf());
 }
 
+void Game::onMouseMove(WPARAM wParam, float xPosition, float yPosition) {
+	switch (wParam) {
+	case MK_LBUTTON:
+		break;
+	}
+}
+
 void Game::onKeyDown(WPARAM wParam) {
 	m_inputHandler.setControl(wParam);
 
@@ -116,16 +123,16 @@ void Game::onKeyDown(WPARAM wParam) {
 
 	switch (controlKey) {
 	case CONTROLS::leftArrow:
-		m_camera.moveCamera(-0.1f, 0.0f, 0.0f);
+		m_camera.moveTarget(-0.1f, 0.0f, 0.0f);
 		break;
 	case CONTROLS::rightArrow:
-		m_camera.moveCamera(0.1f, 0.0f, 0.0f);
+		m_camera.moveTarget(0.1f, 0.0f, 0.0f);
 		break;
 	case CONTROLS::upArrow:
-		m_camera.moveCamera(0.0f, 0.0f, 0.1f);
+		m_camera.movePosition(0.0f, 0.0f, 0.1f);
 		break;
 	case CONTROLS::downArrow:
-		m_camera.moveCamera(0.0f, 0.0f, -0.1f);
+		m_camera.movePosition(0.0f, 0.0f, -0.1f);
 		break;
 	}
 

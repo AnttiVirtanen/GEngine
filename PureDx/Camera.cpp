@@ -1,5 +1,6 @@
 #include "pch.h"
 #include "Camera.h"
+#include "Debugger.h"
 
 using namespace GEngine;
 using namespace DirectX;
@@ -35,9 +36,19 @@ void Camera::setPosition(float x, float y, float z)
 	m_position = XMVectorSet(x, y, z, 0);
 }
 
-void Camera::moveCamera(float x, float y, float z)
+void Camera::movePosition(float x, float y, float z)
 {
 	m_position = m_position + XMVectorSet(x, y, z, 0);
+}
+
+void Camera::moveTarget(float x, float y, float z)
+{
+	m_target = m_target + XMVectorSet(x, y, z, 0);
+
+	XMFLOAT3 vec;
+	XMStoreFloat3(&vec, m_target);
+
+	Debugger::debugToConsole("Eka String", "Toka String", "Kolmas String", "NelQ ViiSQ", Debugger::toStr(1));
 }
 
 XMMATRIX Camera::getCameraTransformation()

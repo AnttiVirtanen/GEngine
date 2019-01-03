@@ -20,6 +20,7 @@ public:
     void GetDefaultSize( int& width, int& height ) const;
 
 	void onKeyDown(WPARAM wParam);
+	void onMouseMove(WPARAM wParam, float xPosition, float yPosition);
 	void onReleaseKey();
 
 private:

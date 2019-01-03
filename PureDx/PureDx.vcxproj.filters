@@ -40,6 +40,9 @@
     <ClInclude Include="CameraHandler.h">
       <Filter>engine</Filter>
     </ClInclude>
+    <ClInclude Include="Debugger.h">
+      <Filter>engine</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="pch.cpp" />

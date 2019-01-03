@@ -1,5 +1,6 @@
 #include "pch.h"
 #include "Game.h"
+#include <windowsx.h>
 
 using namespace DirectX;
 
@@ -102,6 +103,12 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
         }
         break;
 
+	case WM_MOUSEMOVE: {
+		float xPosition = GET_X_LPARAM(lParam);
+		float yPosition = GET_Y_LPARAM(lParam);
+		game->onMouseMove(wParam, xPosition, yPosition);
+		break;
+	}
 	case WM_KEYDOWN:
 		game->onKeyDown(wParam);
 		break;
