@@ -31,16 +31,13 @@
     <ClInclude Include="Renderer.h">
       <Filter>engine</Filter>
     </ClInclude>
-    <ClInclude Include="InputController.h">
-      <Filter>engine</Filter>
-    </ClInclude>
-    <ClInclude Include="InputHandler.h">
-      <Filter>engine</Filter>
-    </ClInclude>
-    <ClInclude Include="CameraHandler.h">
-      <Filter>engine</Filter>
-    </ClInclude>
     <ClInclude Include="Debugger.h">
+      <Filter>engine</Filter>
+    </ClInclude>
+    <ClInclude Include="CameraController.h">
+      <Filter>engine</Filter>
+    </ClInclude>
+    <ClInclude Include="InputProxy.h">
       <Filter>engine</Filter>
     </ClInclude>
   </ItemGroup>
@@ -57,10 +54,10 @@
     <ClCompile Include="Camera.cpp">
       <Filter>engine</Filter>
     </ClCompile>
-    <ClCompile Include="InputController.cpp">
+    <ClCompile Include="CameraController.cpp">
       <Filter>engine</Filter>
     </ClCompile>
-    <ClCompile Include="InputHandler.cpp">
+    <ClCompile Include="InputProxy.cpp">
       <Filter>engine</Filter>
     </ClCompile>
   </ItemGroup>

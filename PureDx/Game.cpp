@@ -1,6 +1,7 @@
 #include "pch.h"
 #include "Game.h"
 #include "Graphics.h"
+#include "Debugger.h"
 #include <d3dcompiler.h>
 
 
@@ -16,8 +17,9 @@ using Microsoft::WRL::ComPtr;
 Game::Game() noexcept : m_window(nullptr), m_outputWidth(800),
 m_outputHeight(600), m_featureLevel(D3D_FEATURE_LEVEL_9_1) {
 
+	m_inputProxy = InputProxy::getInstance();
 	m_camera = Camera(60, static_cast<float>(m_outputWidth / m_outputHeight));
-	m_camera.setPosition(0, 0, -2.5f);
+	m_cameraController = CameraController(&m_camera);
 
 	m_meshes.push_back(Cube(XMFLOAT3(0.5, 0.5, 0.5)));
 	m_meshes.push_back(Cube(XMFLOAT3(-1.0, 0.5, 0)));
@@ -47,7 +49,6 @@ void Game::Tick()
 void Game::Update(DX::StepTimer const& timer)
 {
 	float elapsedTime = float(timer.GetElapsedSeconds());
-
 }
 
 void Game::initializePipeline() {
@@ -111,42 +112,33 @@ void Game::CreateBuffers() {
 void Game::onMouseMove(WPARAM wParam, float xPosition, float yPosition) {
 	switch (wParam) {
 	case MK_LBUTTON:
+		m_cameraController.handleCursorMovement(xPosition, yPosition);
+		break;
+	default:
+		m_cameraController.updateCursorPosition(0, 0);
 		break;
 	}
 }
 
 void Game::onKeyDown(WPARAM wParam) {
-	m_inputHandler.setControl(wParam);
+	CONTROLS controlKey = static_cast<CONTROLS>(wParam);
 
-	// Proto, move this
-	CONTROLS controlKey = m_inputHandler.getControl();
-
-	switch (controlKey) {
-	case CONTROLS::leftArrow:
-		m_camera.moveTarget(-0.1f, 0.0f, 0.0f);
-		break;
-	case CONTROLS::rightArrow:
-		m_camera.moveTarget(0.1f, 0.0f, 0.0f);
-		break;
-	case CONTROLS::upArrow:
-		m_camera.movePosition(0.0f, 0.0f, 0.1f);
-		break;
-	case CONTROLS::downArrow:
-		m_camera.movePosition(0.0f, 0.0f, -0.1f);
-		break;
-	}
-
+	m_inputProxy->setControlKey(controlKey);
+	m_cameraController.handleKeyboardInput(controlKey);
 }
 
 void Game::onReleaseKey()
 {
-	m_inputHandler.releaseControl();
+	m_inputProxy->releaseControl();
 }
 
 // Scene method
 XMMATRIX Game::getWorldTransformation() {
+	//float elapsedTime = float(m_timer.GetTotalSeconds());
+	//XMMATRIX worldTranformation = DirectX::XMMatrixRotationX(XMConvertToRadians(elapsedTime * 10));
+	
 	XMMATRIX cameraTransformation = m_camera.getProjectViewTransformation();
-	XMMATRIX worldTranformation = DirectX::XMMatrixRotationY(DirectX::XMConvertToRadians(30));
+	XMMATRIX worldTranformation = DirectX::XMMatrixRotationY(XMConvertToRadians(0));
 	XMMATRIX transformation = worldTranformation * cameraTransformation;
 	
 	return transformation;

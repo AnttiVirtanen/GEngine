@@ -3,7 +3,8 @@
 #include "Cube.h"
 #include "Camera.h"
 #include "Renderer.h"
-#include "InputHandler.h"
+#include "InputProxy.h"
+#include "CameraController.h"
 
 class Game {
 public:
@@ -62,8 +63,9 @@ private:
 	Cube m_cube;
 	Camera m_camera;
 	Renderer m_renderer;
-	InputHandler m_inputHandler;
+	InputProxy* m_inputProxy;
 	vector<Drawable> m_meshes;
+	CameraController m_cameraController;
 
     DX::StepTimer                                   m_timer;
 };

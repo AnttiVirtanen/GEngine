@@ -32,6 +32,8 @@
 #include <memory>
 #include <stdexcept>
 
+#include "Debugger.h"
+
 namespace DX
 {
     inline void ThrowIfFailed(HRESULT hr)
