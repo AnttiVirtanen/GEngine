@@ -2,7 +2,13 @@
 #include "Game.h"
 #include "Graphics.h"
 #include "Debugger.h"
+
 #include <d3dcompiler.h>
+
+#include <numeric>
+#include <iostream>
+#include <vector>
+#include <algorithm>
 
 
 // Since d3dcompiler.lib is not directly added as dependency to linker add it manually
@@ -11,6 +17,7 @@
 extern void ExitGame();
 
 using namespace DirectX;
+using namespace std;
 using namespace GEngine;
 using Microsoft::WRL::ComPtr;
 
@@ -21,8 +28,16 @@ m_outputHeight(600), m_featureLevel(D3D_FEATURE_LEVEL_9_1) {
 	m_camera = Camera(60, static_cast<float>(m_outputWidth / m_outputHeight));
 	m_cameraController = CameraController(&m_camera);
 
-	m_meshes.push_back(Cube(XMFLOAT3(0.5, 0.5, 0.5)));
-	m_meshes.push_back(Cube(XMFLOAT3(-1.0, 0.5, 0)));
+	// Test models.
+	Mesh m1 = m_meshGenerator.generateStaticCube(XMFLOAT3(0.5, 0.5, 0.5));
+	Mesh m2 = m_meshGenerator.generateStaticCube(XMFLOAT3(-1.0, 0.5, 0));
+	Mesh m3 = m_meshGenerator.generateStaticGrid(XMFLOAT3(0, 0, 0));
+
+	m_meshManager.add(m1);
+	m_meshManager.add(m2);
+	m_meshManager.add(m3);
+
+	m_meshManager.addRasterized(m1);
 }
 
 void Game::Initialize(HWND window, int width, int height)
@@ -36,13 +51,12 @@ void Game::Initialize(HWND window, int width, int height)
 	CreateResources();
 	initializePipeline();
 	CreateBuffers();
+	CreateRenderStates(D3D11_FILL_WIREFRAME);
 }
 
 void Game::Tick()
 {
-	m_timer.Tick([&]() {
-		Update(m_timer);
-	});
+	m_timer.Tick([&]() { Update(m_timer); });
 	Render();
 }
 
@@ -74,17 +88,21 @@ void Game::initializePipeline() {
 }
 
 void Game::CreateBuffers() {
+	int totalVertexCount = m_meshManager.getTotalVertexCount();
+	int totalIndexCount = m_meshManager.getTotalIndexCount();
+	vector<unsigned int> indices = m_meshManager.getAllIndices();
+
 	D3D11_BUFFER_DESC vertexBufferDesc;
 	ZeroMemory(&vertexBufferDesc, sizeof(vertexBufferDesc));
 	vertexBufferDesc.Usage = D3D11_USAGE_DYNAMIC;
-	vertexBufferDesc.ByteWidth = sizeof(GEngine::Vertex) * 8;
+	vertexBufferDesc.ByteWidth = sizeof(GEngine::Vertex) * totalVertexCount;
 	vertexBufferDesc.BindFlags = D3D11_BIND_VERTEX_BUFFER;
 	vertexBufferDesc.CPUAccessFlags = D3D11_CPU_ACCESS_WRITE;
 	
 	D3D11_BUFFER_DESC indexBufferDesc;
 	ZeroMemory(&indexBufferDesc, sizeof(indexBufferDesc));
 	indexBufferDesc.Usage = D3D11_USAGE_DEFAULT;
-	indexBufferDesc.ByteWidth = sizeof(unsigned int) * 36;
+	indexBufferDesc.ByteWidth = sizeof(unsigned int) * totalIndexCount;
 	indexBufferDesc.BindFlags = D3D11_BIND_INDEX_BUFFER;
 	indexBufferDesc.CPUAccessFlags = 0;
 	indexBufferDesc.MiscFlags = 0;
@@ -98,15 +116,23 @@ void Game::CreateBuffers() {
 	constantBufferDesc.MiscFlags = 0;
 	constantBufferDesc.StructureByteStride = 0;
 
-	D3D11_SUBRESOURCE_DATA indexData;
-	ZeroMemory(&indexData, sizeof(indexData));
-	auto indices = m_cube.getIndices();
-	indexData.pSysMem = &indices[0];
+	D3D11_SUBRESOURCE_DATA indexBufferData;
+	indexBufferData.pSysMem = &indices[0];
+	indexBufferData.SysMemPitch = 0;
+	indexBufferData.SysMemSlicePitch = 0;
 
 	m_d3dDevice->CreateBuffer(&vertexBufferDesc, nullptr, m_vertexBuffer.GetAddressOf());
 	m_d3dDevice->CreateBuffer(&constantBufferDesc, nullptr, m_constantBuffer.GetAddressOf());
+	m_d3dDevice->CreateBuffer(&indexBufferDesc, &indexBufferData, m_indexBuffer.GetAddressOf());
+}
 
-	m_d3dDevice->CreateBuffer(&indexBufferDesc, &indexData, m_indexBuffer.GetAddressOf());
+void Game::CreateRenderStates(D3D11_FILL_MODE fillMode) {
+	D3D11_RASTERIZER_DESC rasterizerDesc;
+	ZeroMemory(&rasterizerDesc, sizeof(D3D11_RASTERIZER_DESC));
+	rasterizerDesc.FillMode = fillMode;
+	rasterizerDesc.CullMode = D3D11_CULL_NONE;
+
+	m_d3dDevice->CreateRasterizerState(&rasterizerDesc, m_rasterizerState.GetAddressOf());
 }
 
 void Game::onMouseMove(WPARAM wParam, float xPosition, float yPosition) {
@@ -165,25 +191,32 @@ void Game::Render()
 	m_d3dContext->VSSetConstantBuffers(0, 1, m_constantBuffer.GetAddressOf());
 	m_d3dContext->IASetVertexBuffers(0, 1, m_vertexBuffer.GetAddressOf(), &stride, &offset);
 	m_d3dContext->IASetIndexBuffer(m_indexBuffer.Get(), DXGI_FORMAT_R32_UINT, 0);
+
 	m_d3dContext->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
 
 	ConstantBufferPerObject cbpo = getConstantBufferObject();
 
 	m_renderer.mapToBuffer(m_d3dContext.Get(), m_constantBuffer.Get(), &cbpo, sizeof(cbpo));
-	m_renderer.render(m_meshes, m_d3dContext.Get(), m_vertexBuffer.Get());
+	m_renderer.render(m_meshManager.getMeshes(), m_d3dContext.Get(), m_vertexBuffer.Get());
+	
+	m_d3dContext->RSSetState(nullptr);
+	m_renderer.render(m_meshManager.getRasterizedMeshes(), m_d3dContext.Get(), m_vertexBuffer.Get());
 
 	Present();
 }
 
 void Game::Clear()
 {
-	m_d3dContext->ClearRenderTargetView(m_renderTargetView.Get(), Colors::CornflowerBlue);
+	m_d3dContext->ClearRenderTargetView(m_renderTargetView.Get(), Colors::Black);
 	m_d3dContext->ClearDepthStencilView(m_depthStencilView.Get(), D3D11_CLEAR_DEPTH | D3D11_CLEAR_STENCIL, 1.0f, 0);
 
 	m_d3dContext->OMSetRenderTargets(1, m_renderTargetView.GetAddressOf(), m_depthStencilView.Get());
 
 	CD3D11_VIEWPORT viewport(0.0f, 0.0f, static_cast<float>(m_outputWidth), static_cast<float>(m_outputHeight));
 	m_d3dContext->RSSetViewports(1, &viewport);
+
+	m_d3dContext->RSSetState(m_rasterizerState.Get());
+
 }
 
 void Game::Present()
@@ -315,6 +348,7 @@ void Game::OnDeviceLost()
 	m_vertexShader.Reset();
 	m_indexBuffer.Reset();
 	m_vertexBuffer.Reset();
+	m_rasterizerState.Reset();
 
 	CreateDevice();
 	CreateResources();

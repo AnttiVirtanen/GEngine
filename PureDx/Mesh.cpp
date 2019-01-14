@@ -1,41 +1,47 @@
 #include "pch.h"
-#include "Drawable.h"
+#include "Mesh.h"
 
 using namespace GEngine;
 using namespace DirectX;
 
-Drawable::Drawable() {
+Mesh::Mesh() {
 	m_worldTransformation = XMMatrixIdentity();
 }
 
-Drawable::Drawable(XMFLOAT3 position)
+Mesh::Mesh(XMFLOAT3 position)
 {
 	m_worldTransformation = XMMatrixIdentity();
 	transform(XMMatrixTranslation(position.x, position.y, position.z));
 }
 
-void Drawable::transform(XMMATRIX transformation)
+Mesh::Mesh(vector<unsigned int> indices, vector<Vertex> vertices, XMFLOAT3 position) : Mesh(position)
+{
+	m_indices = indices;
+	m_vertices = vertices;
+}
+
+void Mesh::transform(XMMATRIX transformation)
 {
 	m_worldTransformation = m_worldTransformation * transformation;
 }
 
-unsigned int Drawable::vertexCount()
+unsigned int Mesh::vertexCount()
 {
 	return m_vertices.size();
 }
 
-unsigned int Drawable::indexCount()
+unsigned int Mesh::indexCount()
 {
 	return m_indices.size();
 }
 
-vector<unsigned int> Drawable::getIndices()
+vector<unsigned int> Mesh::getIndices()
 {
 	return m_indices;
 }
 
 // Reconsider this
-vector<Vertex> Drawable::getVertices()
+vector<Vertex> Mesh::getVertices()
 {
 	vector<Vertex> transformed = m_vertices;
 	for (auto &vertex: transformed) {
@@ -46,7 +52,7 @@ vector<Vertex> Drawable::getVertices()
 	return transformed;
 }
 
-XMMATRIX Drawable::getTransformation()
+XMMATRIX Mesh::getTransformation()
 {
 	return m_worldTransformation;
 }

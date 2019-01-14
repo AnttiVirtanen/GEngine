@@ -1,10 +1,11 @@
 #pragma once
 #include "StepTimer.h"
-#include "Cube.h"
 #include "Camera.h"
 #include "Renderer.h"
 #include "InputProxy.h"
 #include "CameraController.h"
+#include "MeshManager.h"
+#include "MeshGenerator.h"
 
 class Game {
 public:
@@ -38,6 +39,7 @@ private:
 	void CreateBuffers();
     void CreateDevice();
     void CreateResources();
+    void CreateRenderStates(D3D11_FILL_MODE fillMode);
 
     void OnDeviceLost();
 
@@ -58,14 +60,15 @@ private:
 	Microsoft::WRL::ComPtr<ID3D11Buffer> m_indexBuffer;
 	Microsoft::WRL::ComPtr<ID3D11Buffer> m_constantBuffer;
 	Microsoft::WRL::ComPtr<ID3D11InputLayout> m_inputLayout;
+	Microsoft::WRL::ComPtr<ID3D11RasterizerState> m_rasterizerState;
 
 	// Testing purposes
-	Cube m_cube;
 	Camera m_camera;
 	Renderer m_renderer;
 	InputProxy* m_inputProxy;
-	vector<Drawable> m_meshes;
 	CameraController m_cameraController;
+	MeshManager m_meshManager;
+	MeshGenerator m_meshGenerator;
 
     DX::StepTimer                                   m_timer;
 };

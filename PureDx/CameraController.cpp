@@ -23,10 +23,10 @@ void CameraController::handleKeyboardInput(CONTROLS controlKey)
 			m_camera->moveCamera(m_cameraSpeed, 0.0f, 0.0f);
 			break;
 		case CONTROLS::upArrow:
-			m_camera->moveCamera(0.0f, 0.0f, -m_cameraSpeed);
+			m_camera->moveCamera(0.0f, 0.0f, m_cameraSpeed);
 			break;
 		case CONTROLS::downArrow:
-			m_camera->moveCamera(0.0f, 0.0f, m_cameraSpeed);
+			m_camera->moveCamera(0.0f, 0.0f, -m_cameraSpeed);
 			break;
 	}
 }

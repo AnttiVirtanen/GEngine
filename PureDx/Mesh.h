@@ -6,10 +6,11 @@ using namespace std;
 using namespace DirectX;
 
 namespace GEngine {
-	class Drawable {
+	class Mesh {
 	public:
-		Drawable();
-		Drawable(XMFLOAT3 position);
+		Mesh();
+		Mesh(XMFLOAT3 position);
+		Mesh(vector<unsigned int> indices, vector<Vertex> vertices, XMFLOAT3 position = XMFLOAT3(0, 0, 0));
 
 		void transform(XMMATRIX transformation);
 		unsigned int vertexCount();

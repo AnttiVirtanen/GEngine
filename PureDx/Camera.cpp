@@ -54,6 +54,7 @@ void Camera::rotateCameraAroundXAxis(float angle)
 	m_rotationMatrix = XMMatrixRotationY(angle);
 }
 
+// Method XMMatrixRotationRollPitchYaw might be suitable here
 XMMATRIX Camera::getCameraTransformation()
 {
 	XMVECTOR translatedPosition = XMVector3Transform(m_position, m_translationMatrix);
@@ -64,7 +65,7 @@ XMMATRIX Camera::getCameraTransformation()
 
 	XMVECTOR newRotatedTarget = XMVectorAdd(targetRotated, translatedPosition);
 	
-	debug(translatedPosition, newRotatedTarget, m_up);
+	//debug(translatedPosition, newRotatedTarget, m_up);
 
 	return XMMatrixLookAtLH(translatedPosition, newRotatedTarget, m_up);
 }

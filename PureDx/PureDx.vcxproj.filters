@@ -8,20 +8,11 @@
     <Filter Include="engine">
       <UniqueIdentifier>{98a9e69c-baa9-4c85-93f8-83af1d163ef0}</UniqueIdentifier>
     </Filter>
-    <Filter Include="engine\shapes">
-      <UniqueIdentifier>{8495d53b-4b23-43e2-bb3c-5a0324f53cfd}</UniqueIdentifier>
-    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="pch.h" />
     <ClInclude Include="Game.h" />
     <ClInclude Include="StepTimer.h" />
-    <ClInclude Include="Cube.h">
-      <Filter>engine\shapes</Filter>
-    </ClInclude>
-    <ClInclude Include="Drawable.h">
-      <Filter>engine</Filter>
-    </ClInclude>
     <ClInclude Include="Camera.h">
       <Filter>engine</Filter>
     </ClInclude>
@@ -40,17 +31,20 @@
     <ClInclude Include="InputProxy.h">
       <Filter>engine</Filter>
     </ClInclude>
+    <ClInclude Include="MeshManager.h">
+      <Filter>engine</Filter>
+    </ClInclude>
+    <ClInclude Include="MeshGenerator.h">
+      <Filter>engine</Filter>
+    </ClInclude>
+    <ClInclude Include="Mesh.h">
+      <Filter>engine</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="pch.cpp" />
     <ClCompile Include="Game.cpp" />
     <ClCompile Include="Main.cpp" />
-    <ClCompile Include="Cube.cpp">
-      <Filter>engine\shapes</Filter>
-    </ClCompile>
-    <ClCompile Include="Drawable.cpp">
-      <Filter>engine</Filter>
-    </ClCompile>
     <ClCompile Include="Camera.cpp">
       <Filter>engine</Filter>
     </ClCompile>
@@ -58,6 +52,15 @@
       <Filter>engine</Filter>
     </ClCompile>
     <ClCompile Include="InputProxy.cpp">
+      <Filter>engine</Filter>
+    </ClCompile>
+    <ClCompile Include="MeshManager.cpp">
+      <Filter>engine</Filter>
+    </ClCompile>
+    <ClCompile Include="MeshGenerator.cpp">
+      <Filter>engine</Filter>
+    </ClCompile>
+    <ClCompile Include="Mesh.cpp">
       <Filter>engine</Filter>
     </ClCompile>
   </ItemGroup>
