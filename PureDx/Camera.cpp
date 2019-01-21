@@ -28,6 +28,10 @@ Camera::Camera(float fieldOfView, float aspectRatio, float nearPlane, float farP
 	m_phi = 0.25f * XM_PI; //pitch u<->d
 }
 
+void Camera::setCameraPosition(float x, float y, float z) {
+	m_position = XMVectorSet(x, y, z, 0);
+}
+
 XMMATRIX Camera::getPerspectiveTransformation()
 {
 	return XMMatrixPerspectiveFovLH(XMConvertToRadians(m_fieldOfView), m_aspectRatio, m_nearPlane, m_farPlane);
@@ -51,7 +55,7 @@ void Camera::rotateCameraAroundYAxis(float angle)
 
 void Camera::rotateCameraAroundXAxis(float angle)
 {
-	m_rotationMatrix = XMMatrixRotationY(angle);
+	m_rotationMatrix = XMMatrixRotationX(angle);
 }
 
 // Method XMMatrixRotationRollPitchYaw might be suitable here
@@ -94,6 +98,3 @@ void Camera::debug(XMVECTOR pos, XMVECTOR tar, XMVECTOR up)
 		Debugger::toStr(upx3.z)
 	);
 }
-
-
-

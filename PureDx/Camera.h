@@ -14,6 +14,8 @@ namespace GEngine {
 		
 		void moveCamera(float x, float y, float z);
 
+		void setCameraPosition(float x, float y, float z);
+
 		void rotateCameraAroundYAxis(float angle);
 		void rotateCameraAroundXAxis(float angle);
 

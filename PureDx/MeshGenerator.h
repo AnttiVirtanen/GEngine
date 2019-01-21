@@ -1,6 +1,7 @@
 #pragma once
 
 #include "Mesh.h"
+#include "Graphics.h"
 
 using namespace GEngine;
 
@@ -8,8 +9,8 @@ namespace GEngine {
 	class MeshGenerator
 	{
 	public:
-		static Mesh generateStaticCube(XMFLOAT3 position = XMFLOAT3(0, 0, 0));
-		static Mesh generateStaticGrid(XMFLOAT3 position = XMFLOAT3(0, 0, 0));
+		static MeshProto generateStaticCube();
+		static MeshProto generateStaticGrid(int horizontalBlocks = 100, int verticalBlocks = 100);
 	};
 }
 

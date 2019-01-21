@@ -8,16 +8,14 @@ Mesh::Mesh() {
 	m_worldTransformation = XMMatrixIdentity();
 }
 
-Mesh::Mesh(XMFLOAT3 position)
+Mesh::Mesh(MeshProto meshProto, XMFLOAT3 position, D3D11_FILL_MODE fillMode)
 {
+	m_indices = meshProto.indices;
+	m_vertices = meshProto.vertices;
+	m_fillMode = fillMode;
+
 	m_worldTransformation = XMMatrixIdentity();
 	transform(XMMatrixTranslation(position.x, position.y, position.z));
-}
-
-Mesh::Mesh(vector<unsigned int> indices, vector<Vertex> vertices, XMFLOAT3 position) : Mesh(position)
-{
-	m_indices = indices;
-	m_vertices = vertices;
 }
 
 void Mesh::transform(XMMATRIX transformation)
@@ -55,4 +53,9 @@ vector<Vertex> Mesh::getVertices()
 XMMATRIX Mesh::getTransformation()
 {
 	return m_worldTransformation;
+}
+
+D3D11_FILL_MODE GEngine::Mesh::getFillMode()
+{
+	return m_fillMode;
 }

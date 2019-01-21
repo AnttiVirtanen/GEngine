@@ -27,17 +27,21 @@ m_outputHeight(600), m_featureLevel(D3D_FEATURE_LEVEL_9_1) {
 	m_inputProxy = InputProxy::getInstance();
 	m_camera = Camera(60, static_cast<float>(m_outputWidth / m_outputHeight));
 	m_cameraController = CameraController(&m_camera);
+	m_renderer = Renderer(m_d3dDevice.Get(), m_d3dContext.Get());
+
+	m_camera.setCameraPosition(0, 2.5f, -5.0f);
 
 	// Test models.
-	Mesh m1 = m_meshGenerator.generateStaticCube(XMFLOAT3(0.5, 0.5, 0.5));
-	Mesh m2 = m_meshGenerator.generateStaticCube(XMFLOAT3(-1.0, 0.5, 0));
-	Mesh m3 = m_meshGenerator.generateStaticGrid(XMFLOAT3(0, 0, 0));
+	MeshProto m1 = m_meshGenerator.generateStaticCube();
+	MeshProto m2 = m_meshGenerator.generateStaticCube();
+	MeshProto m3 = m_meshGenerator.generateStaticCube();
+	
+	MeshProto r1 = m_meshGenerator.generateStaticGrid();
 
-	m_meshManager.add(m1);
-	m_meshManager.add(m2);
-	m_meshManager.add(m3);
-
-	m_meshManager.addRasterized(m1);
+	m_meshManager.add(Mesh(m1, XMFLOAT3(-3.0, 0.5, 0.5)));
+	m_meshManager.add(Mesh(m2, XMFLOAT3(-1.0, 0.5, 0)));
+	m_meshManager.add(Mesh(m3, XMFLOAT3(1.0, 0.5, 0)));
+	m_meshManager.add(Mesh(r1, XMFLOAT3(-2.0, 0, 0), D3D11_FILL_WIREFRAME));
 }
 
 void Game::Initialize(HWND window, int width, int height)
@@ -51,7 +55,8 @@ void Game::Initialize(HWND window, int width, int height)
 	CreateResources();
 	initializePipeline();
 	CreateBuffers();
-	CreateRenderStates(D3D11_FILL_WIREFRAME);
+	m_renderer.setDevice(m_d3dDevice.Get());
+	m_renderer.setContext(m_d3dContext.Get());
 }
 
 void Game::Tick()
@@ -126,15 +131,6 @@ void Game::CreateBuffers() {
 	m_d3dDevice->CreateBuffer(&indexBufferDesc, &indexBufferData, m_indexBuffer.GetAddressOf());
 }
 
-void Game::CreateRenderStates(D3D11_FILL_MODE fillMode) {
-	D3D11_RASTERIZER_DESC rasterizerDesc;
-	ZeroMemory(&rasterizerDesc, sizeof(D3D11_RASTERIZER_DESC));
-	rasterizerDesc.FillMode = fillMode;
-	rasterizerDesc.CullMode = D3D11_CULL_NONE;
-
-	m_d3dDevice->CreateRasterizerState(&rasterizerDesc, m_rasterizerState.GetAddressOf());
-}
-
 void Game::onMouseMove(WPARAM wParam, float xPosition, float yPosition) {
 	switch (wParam) {
 	case MK_LBUTTON:
@@ -196,11 +192,9 @@ void Game::Render()
 
 	ConstantBufferPerObject cbpo = getConstantBufferObject();
 
-	m_renderer.mapToBuffer(m_d3dContext.Get(), m_constantBuffer.Get(), &cbpo, sizeof(cbpo));
-	m_renderer.render(m_meshManager.getMeshes(), m_d3dContext.Get(), m_vertexBuffer.Get());
-	
-	m_d3dContext->RSSetState(nullptr);
-	m_renderer.render(m_meshManager.getRasterizedMeshes(), m_d3dContext.Get(), m_vertexBuffer.Get());
+	m_renderer.mapToBuffer(m_constantBuffer.Get(), &cbpo, sizeof(cbpo));
+
+	m_renderer.render(m_meshManager.getMeshes(), m_vertexBuffer.Get());
 
 	Present();
 }
@@ -214,8 +208,6 @@ void Game::Clear()
 
 	CD3D11_VIEWPORT viewport(0.0f, 0.0f, static_cast<float>(m_outputWidth), static_cast<float>(m_outputHeight));
 	m_d3dContext->RSSetViewports(1, &viewport);
-
-	m_d3dContext->RSSetState(m_rasterizerState.Get());
 
 }
 
@@ -348,7 +340,8 @@ void Game::OnDeviceLost()
 	m_vertexShader.Reset();
 	m_indexBuffer.Reset();
 	m_vertexBuffer.Reset();
-	m_rasterizerState.Reset();
+
+	m_renderer.Reset();
 
 	CreateDevice();
 	CreateResources();

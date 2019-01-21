@@ -2,9 +2,9 @@
 #include "MeshGenerator.h"
 
 
-Mesh MeshGenerator::generateStaticCube(XMFLOAT3 position)
+MeshProto MeshGenerator::generateStaticCube()
 {
-	vector<unsigned int> m_indices = {
+	vector<unsigned int> indices = {
 		0, 1, 2,			// Front face
 		1, 3, 2,			// Front face
 
@@ -24,7 +24,7 @@ Mesh MeshGenerator::generateStaticCube(XMFLOAT3 position)
 		5, 7, 3				// Right Face
 	};
 
-	vector<Vertex> m_vertices = {
+	vector<Vertex> vertices = {
 		{XMFLOAT3(-0.5f, 0.5f, 0.0f), XMFLOAT4(1.0f, 0.0f, 0.0f, 1.0f)},		// 0
 		{XMFLOAT3(0.5f, 0.5f, 0.0f), XMFLOAT4(0.0f, 1.0f, 0.0f, 1.0f)},			// 1
 		{XMFLOAT3(-0.5f, -0.5f, 0.0f), XMFLOAT4(1.0f, 0.0f, 1.0f, 1.0f)},		// 2
@@ -36,14 +36,11 @@ Mesh MeshGenerator::generateStaticCube(XMFLOAT3 position)
 		{XMFLOAT3(0.5f, -0.5f, 0.5f), XMFLOAT4(1.0f, 0.0f, 1.0f, 1.0f)}			// 7
 	};
 
-	return Mesh(m_indices, m_vertices, position);
+	return MeshProto{ indices, vertices };
 }
 
-Mesh MeshGenerator::generateStaticGrid(XMFLOAT3 position)
+MeshProto MeshGenerator::generateStaticGrid(int horizontalBlocks, int verticalBlocks)
 {
-	int verticalBlocks = 4;
-	int horizontalBlocks = 4;
-
 	vector<unsigned int> indices;
 
 	for (int y = 0; y < verticalBlocks; y++) {
@@ -63,13 +60,23 @@ Mesh MeshGenerator::generateStaticGrid(XMFLOAT3 position)
 		}
 	}
 
+	float origin = 0.0f;
+	float blockHeight = 1.0f;
+	float blockWidth = 1.0f;
+	float mostLeftX = origin - (horizontalBlocks / 2);		// rounding
+	float mostTopY = origin - (verticalBlocks / 2);			// rounding
+
 	vector<Vertex> vertices;
 	for (int y = 0; y <= verticalBlocks; y++) {
 		for (int x = horizontalBlocks; x >= 0; x--) {
-			Vertex vertex = { XMFLOAT3(0.5f * y, 0.5f * x, 1.0f), XMFLOAT4(0.5f, 0.5f, 0.5f, 1.0f) };
+			float xCoord = mostLeftX + blockWidth * x;
+			float yCoord = 0;
+			float zCoord = mostTopY + blockHeight * y;
+
+			Vertex vertex = { XMFLOAT3(xCoord, yCoord, zCoord), XMFLOAT4(0.5f, 0.5f, 0.5f, 1.0f) };
 			vertices.push_back(vertex);
 		}
 	}
 
-	return Mesh(indices, vertices, position);
+	return MeshProto{ indices, vertices };
 }

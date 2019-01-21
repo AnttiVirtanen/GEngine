@@ -39,7 +39,7 @@ private:
 	void CreateBuffers();
     void CreateDevice();
     void CreateResources();
-    void CreateRenderStates(D3D11_FILL_MODE fillMode);
+    void CreateRenderStates(D3D11_FILL_MODE fillMode = D3D11_FILL_SOLID);
 
     void OnDeviceLost();
 
@@ -60,7 +60,6 @@ private:
 	Microsoft::WRL::ComPtr<ID3D11Buffer> m_indexBuffer;
 	Microsoft::WRL::ComPtr<ID3D11Buffer> m_constantBuffer;
 	Microsoft::WRL::ComPtr<ID3D11InputLayout> m_inputLayout;
-	Microsoft::WRL::ComPtr<ID3D11RasterizerState> m_rasterizerState;
 
 	// Testing purposes
 	Camera m_camera;
