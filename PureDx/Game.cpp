@@ -127,14 +127,16 @@ void Game::CreateBuffers() {
 }
 
 void Game::onMouseMove(WPARAM wParam, float xPosition, float yPosition) {
+	m_cameraController.handleCursorMovement(xPosition, yPosition);
+/*
 	switch (wParam) {
 	case MK_LBUTTON:
-		m_cameraController.handleCursorMovement(xPosition, yPosition);
 		break;
 	default:
 		m_cameraController.updateCursorPosition(0, 0);
 		break;
 	}
+	*/
 }
 
 void Game::onKeyDown(WPARAM wParam) {

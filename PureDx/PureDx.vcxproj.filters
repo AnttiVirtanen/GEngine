@@ -78,4 +78,7 @@
     <None Include="packages.config" />
     <None Include="Shaders.shader" />
   </ItemGroup>
+  <ItemGroup>
+    <Text Include="TODO-list.txt" />
+  </ItemGroup>
 </Project>

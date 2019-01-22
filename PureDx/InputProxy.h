@@ -1,7 +1,6 @@
 #pragma once
 constexpr auto VK_MULTIPLEKEYSDOWN = 0x99;
 
-// Make singleton template if more singletons occur.
 namespace GEngine {
 	enum CONTROLS {
 		leftArrow = VK_LEFT,

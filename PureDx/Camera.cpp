@@ -69,7 +69,7 @@ XMMATRIX Camera::getCameraTransformation()
 
 	XMVECTOR newRotatedTarget = XMVectorAdd(targetRotated, translatedPosition);
 	
-	//debug(translatedPosition, newRotatedTarget, m_up);
+	debug(translatedPosition, newRotatedTarget, m_up);
 
 	return XMMatrixLookAtLH(translatedPosition, newRotatedTarget, m_up);
 }

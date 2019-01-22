@@ -34,23 +34,23 @@ void CameraController::handleKeyboardInput(CONTROLS controlKey)
 void CameraController::handleCursorMovement(float x, float y)
 {
 	if (x < m_lastCursorX) {
-		m_xRotation += m_cameraSpeed;
-		//m_camera->rotateCameraAroundYAxis(m_xRotation);
+		m_xRotation -= m_cameraSpeed;
+		m_camera->rotateCameraAroundYAxis(m_xRotation);
 	}
 
 	if (x > m_lastCursorX) {
-		m_xRotation -= m_cameraSpeed;
-		//m_camera->rotateCameraAroundYAxis(m_xRotation);
+		m_xRotation += m_cameraSpeed;
+		m_camera->rotateCameraAroundYAxis(m_xRotation);
 	}
 
 	if (y < m_lastCursorY) {
 		m_yRotation += m_cameraSpeed;
-		m_camera->rotateCameraAroundXAxis(m_yRotation);
+		//m_camera->rotateCameraAroundXAxis(m_yRotation);
 	}
 
 	if (y > m_lastCursorY) {
 		m_yRotation -= m_cameraSpeed;
-		m_camera->rotateCameraAroundXAxis(m_yRotation);
+		//m_camera->rotateCameraAroundXAxis(m_yRotation);
 	}
 
 	updateCursorPosition(x, y);
