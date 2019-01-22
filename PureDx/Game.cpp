@@ -5,12 +5,6 @@
 
 #include <d3dcompiler.h>
 
-#include <numeric>
-#include <iostream>
-#include <vector>
-#include <algorithm>
-
-
 // Since d3dcompiler.lib is not directly added as dependency to linker add it manually
 #pragma comment(lib,"d3dcompiler.lib")
 
@@ -61,13 +55,14 @@ void Game::Initialize(HWND window, int width, int height)
 
 void Game::Tick()
 {
-	m_timer.Tick([&]() { Update(m_timer); });
-	Render();
+	m_gameTimer.runTimer([&]() {
+		Update();
+		Render();
+	});
 }
 
-void Game::Update(DX::StepTimer const& timer)
+void Game::Update()
 {
-	float elapsedTime = float(timer.GetElapsedSeconds());
 }
 
 void Game::initializePipeline() {
@@ -156,9 +151,6 @@ void Game::onReleaseKey()
 
 // Scene method
 XMMATRIX Game::getWorldTransformation() {
-	//float elapsedTime = float(m_timer.GetTotalSeconds());
-	//XMMATRIX worldTranformation = DirectX::XMMatrixRotationX(XMConvertToRadians(elapsedTime * 10));
-	
 	XMMATRIX cameraTransformation = m_camera.getProjectViewTransformation();
 	XMMATRIX worldTranformation = DirectX::XMMatrixRotationY(XMConvertToRadians(0));
 	XMMATRIX transformation = worldTranformation * cameraTransformation;
@@ -177,8 +169,6 @@ ConstantBufferPerObject Game::getConstantBufferObject() {
 
 void Game::Render()
 {
-	if (m_timer.GetFrameCount() == 0) { return; }
-	
 	Clear();
 
 	UINT stride = sizeof(Vertex);
@@ -208,7 +198,6 @@ void Game::Clear()
 
 	CD3D11_VIEWPORT viewport(0.0f, 0.0f, static_cast<float>(m_outputWidth), static_cast<float>(m_outputHeight));
 	m_d3dContext->RSSetViewports(1, &viewport);
-
 }
 
 void Game::Present()
@@ -225,7 +214,6 @@ void Game::Present()
 
 void Game::OnResuming()
 {
-	m_timer.ResetElapsedTime();
 }
 
 void Game::OnWindowSizeChanged(int width, int height)

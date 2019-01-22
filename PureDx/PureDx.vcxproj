@@ -157,6 +157,7 @@
     <ClInclude Include="Camera.h" />
     <ClInclude Include="CameraController.h" />
     <ClInclude Include="Debugger.h" />
+    <ClInclude Include="GameTimer.h" />
     <ClInclude Include="Mesh.h" />
     <ClInclude Include="Game.h" />
     <ClInclude Include="InputProxy.h" />
@@ -164,12 +165,12 @@
     <ClInclude Include="MeshManager.h" />
     <ClInclude Include="pch.h" />
     <ClInclude Include="Renderer.h" />
-    <ClInclude Include="StepTimer.h" />
     <ClInclude Include="Graphics.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Camera.cpp" />
     <ClCompile Include="CameraController.cpp" />
+    <ClCompile Include="GameTimer.cpp" />
     <ClCompile Include="Mesh.cpp" />
     <ClCompile Include="Game.cpp" />
     <ClCompile Include="InputProxy.cpp" />

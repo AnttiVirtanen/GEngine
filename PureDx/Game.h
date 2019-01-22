@@ -1,11 +1,11 @@
 #pragma once
-#include "StepTimer.h"
 #include "Camera.h"
 #include "Renderer.h"
 #include "InputProxy.h"
 #include "CameraController.h"
 #include "MeshManager.h"
 #include "MeshGenerator.h"
+#include "GameTimer.h"
 
 class Game {
 public:
@@ -26,8 +26,7 @@ public:
 	void onReleaseKey();
 
 private:
-
-    void Update(DX::StepTimer const& timer);
+    void Update();
 	void initializePipeline();
 	XMMATRIX getWorldTransformation();
 	ConstantBufferPerObject getConstantBufferObject();
@@ -39,7 +38,6 @@ private:
 	void CreateBuffers();
     void CreateDevice();
     void CreateResources();
-    void CreateRenderStates(D3D11_FILL_MODE fillMode = D3D11_FILL_SOLID);
 
     void OnDeviceLost();
 
@@ -68,6 +66,5 @@ private:
 	CameraController m_cameraController;
 	MeshManager m_meshManager;
 	MeshGenerator m_meshGenerator;
-
-    DX::StepTimer                                   m_timer;
+	GameTimer m_gameTimer;
 };

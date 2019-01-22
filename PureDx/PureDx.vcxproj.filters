@@ -12,7 +12,6 @@
   <ItemGroup>
     <ClInclude Include="pch.h" />
     <ClInclude Include="Game.h" />
-    <ClInclude Include="StepTimer.h" />
     <ClInclude Include="Camera.h">
       <Filter>engine</Filter>
     </ClInclude>
@@ -40,6 +39,9 @@
     <ClInclude Include="Mesh.h">
       <Filter>engine</Filter>
     </ClInclude>
+    <ClInclude Include="GameTimer.h">
+      <Filter>engine</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="pch.cpp" />
@@ -61,6 +63,9 @@
       <Filter>engine</Filter>
     </ClCompile>
     <ClCompile Include="Mesh.cpp">
+      <Filter>engine</Filter>
+    </ClCompile>
+    <ClCompile Include="GameTimer.cpp">
       <Filter>engine</Filter>
     </ClCompile>
   </ItemGroup>
