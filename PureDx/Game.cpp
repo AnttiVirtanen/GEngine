@@ -23,8 +23,12 @@ m_outputHeight(600), m_featureLevel(D3D_FEATURE_LEVEL_9_1) {
 	m_cameraController = CameraController(&m_camera);
 	m_renderer = Renderer(m_d3dDevice.Get(), m_d3dContext.Get());
 
-	m_camera.setCameraPosition(0, 2.5f, -5.0f);
+	m_camera.setCameraPosition(-7.0, 2.5f, -6.5f);
+	m_camera.setCameraTarget(-3.5, 0.0, -2.5);
 
+	//m_camera.setCameraPosition(-3.0, 20.0f, 0.0f);	// TEST COORDS FOR Y-ROTATION
+	//m_camera.setCameraTarget(0.0, 0.0, 0.0);			// TEST COORDS FOR Y-ROTATION
+	
 	// Test models.
 	MeshProto m1 = m_meshGenerator.generateStaticCube();
 	MeshProto m2 = m_meshGenerator.generateStaticCube();
@@ -127,16 +131,14 @@ void Game::CreateBuffers() {
 }
 
 void Game::onMouseMove(WPARAM wParam, float xPosition, float yPosition) {
-	m_cameraController.handleCursorMovement(xPosition, yPosition);
-/*
 	switch (wParam) {
 	case MK_LBUTTON:
+		m_cameraController.handleCursorMovement(xPosition, yPosition);
 		break;
 	default:
 		m_cameraController.updateCursorPosition(0, 0);
 		break;
 	}
-	*/
 }
 
 void Game::onKeyDown(WPARAM wParam) {

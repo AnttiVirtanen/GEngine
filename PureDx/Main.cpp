@@ -45,7 +45,7 @@ int WINAPI wWinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance, 
     SetWindowLongPtr(hwnd, GWLP_USERDATA, reinterpret_cast<LONG_PTR>(g_game.get()) );
 
     GetClientRect(hwnd, &rc);
-	ShowCursor(false);
+	//ShowCursor(false);
 
     g_game->Initialize(hwnd, rc.right - rc.left, rc.bottom - rc.top);
 

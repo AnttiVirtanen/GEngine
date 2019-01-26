@@ -1,8 +1,8 @@
 #include "pch.h"
 #include "Camera.h"
 #include "Debugger.h"
+#include "utilities.h"
 
-using namespace GEngine;
 using namespace DirectX;
 
 Camera::Camera()
@@ -22,7 +22,6 @@ Camera::Camera(float fieldOfView, float aspectRatio, float nearPlane, float farP
 	m_up = XMVectorSet(0, 1, 0, 0);
 
 	m_rotationMatrix = XMMatrixIdentity();
-	m_translationMatrix = XMMatrixIdentity();
 	
 	m_theta = 1.5f * XM_PI;	// yaw l<->r
 	m_phi = 0.25f * XM_PI; //pitch u<->d
@@ -30,6 +29,10 @@ Camera::Camera(float fieldOfView, float aspectRatio, float nearPlane, float farP
 
 void Camera::setCameraPosition(float x, float y, float z) {
 	m_position = XMVectorSet(x, y, z, 0);
+}
+
+void GEngine::Camera::setCameraTarget(float x, float y, float z) {
+	m_target = XMVectorSet(x, y, z, 0);
 }
 
 XMMATRIX Camera::getPerspectiveTransformation()
@@ -42,10 +45,35 @@ XMMATRIX Camera::getProjectViewTransformation()
 	return getCameraTransformation() * getPerspectiveTransformation();
 }
 
-// Move camera left <-> right. This might be wrong. 
-void Camera::moveCamera(float x, float y, float z)
-{
-	m_translationMatrix = m_translationMatrix * XMMatrixTranslation(x, y, z);
+XMVECTOR GEngine::Camera::getLookAtVector() {
+	XMVECTOR lookAtVector = XMVectorSubtract(m_target, m_position);
+	XMVECTOR lookAtVectorNormalized = XMVector3Normalize(lookAtVector);
+	return XMVector3Transform(lookAtVectorNormalized, m_rotationMatrix);
+}
+
+void GEngine::Camera::moveCameraHorizontally(float distance) {
+	XMVECTOR lookAtVectorRotated = getLookAtVector();
+
+	XMVECTOR directionVector = XMVector3Cross(m_up, lookAtVectorRotated);
+	XMVECTOR directionVectorNormalized = XMVector3Normalize(directionVector);
+	
+	XMVECTOR upVector = XMVector3Cross(directionVectorNormalized, lookAtVectorRotated);
+
+	directionVectorNormalized = directionVectorNormalized * distance;
+	
+	m_target = m_target + directionVectorNormalized;
+	m_position = m_position + directionVectorNormalized;
+}
+
+// This is bad.
+void GEngine::Camera::moveCameraVertically(float distance) {
+	XMVECTOR lookAtVectorRotated = getLookAtVector();
+	XMFLOAT3 x3 = Utilities::XMVECTORToXMFLOAT3(lookAtVectorRotated);
+	XMVECTOR projectionVector = XMVectorSet(x3.x, 0, x3.z, 1);
+	XMVECTOR scaledProjectionVector = projectionVector * distance;
+	
+	m_target = XMVectorAdd(m_target, scaledProjectionVector);
+	m_position = XMVectorAdd(m_position, scaledProjectionVector);
 }
 
 void Camera::rotateCameraAroundYAxis(float angle)
@@ -61,17 +89,12 @@ void Camera::rotateCameraAroundXAxis(float angle)
 // Method XMMatrixRotationRollPitchYaw might be suitable here
 XMMATRIX Camera::getCameraTransformation()
 {
-	XMVECTOR translatedPosition = XMVector3Transform(m_position, m_translationMatrix);
-	XMVECTOR translatedTarget = XMVector3Transform(m_target, m_translationMatrix);
-
-	XMVECTOR targetAtOrigin = XMVectorSubtract(translatedTarget, translatedPosition);
-	XMVECTOR targetRotated = XMVector3Transform(targetAtOrigin, m_rotationMatrix);
-
-	XMVECTOR newRotatedTarget = XMVectorAdd(targetRotated, translatedPosition);
+	XMVECTOR lookAtVectorRotated = getLookAtVector();
+	XMVECTOR newTarget = XMVectorAdd(lookAtVectorRotated, m_position);
 	
-	debug(translatedPosition, newRotatedTarget, m_up);
+	debug(m_position, newTarget, m_up);
 
-	return XMMatrixLookAtLH(translatedPosition, newRotatedTarget, m_up);
+	return XMMatrixLookAtLH(m_position, newTarget, m_up);
 }
 
 void Camera::debug(XMVECTOR pos, XMVECTOR tar, XMVECTOR up)

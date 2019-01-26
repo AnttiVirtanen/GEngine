@@ -17,16 +17,16 @@ void CameraController::handleKeyboardInput(CONTROLS controlKey)
 {
 	switch (controlKey) {
 		case CONTROLS::leftArrow:
-			m_camera->moveCamera(-m_cameraSpeed, 0.0f, 0.0f);
+			m_camera->moveCameraHorizontally(-m_cameraSpeed);
 			break;
 		case CONTROLS::rightArrow:
-			m_camera->moveCamera(m_cameraSpeed, 0.0f, 0.0f);
+			m_camera->moveCameraHorizontally(m_cameraSpeed);
 			break;
 		case CONTROLS::upArrow:
-			m_camera->moveCamera(0.0f, 0.0f, m_cameraSpeed);
+			m_camera->moveCameraVertically(m_cameraSpeed);
 			break;
 		case CONTROLS::downArrow:
-			m_camera->moveCamera(0.0f, 0.0f, -m_cameraSpeed);
+			m_camera->moveCameraVertically(-m_cameraSpeed);
 			break;
 	}
 }

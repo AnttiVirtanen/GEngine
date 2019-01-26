@@ -2,6 +2,7 @@
 
 using namespace DirectX;
 
+// Upright space might help 
 namespace GEngine {
 	class Camera {
 	public:
@@ -11,13 +12,17 @@ namespace GEngine {
 		XMMATRIX getCameraTransformation();
 		XMMATRIX getPerspectiveTransformation();
 		XMMATRIX getProjectViewTransformation();
-		
-		void moveCamera(float x, float y, float z);
+
+		void moveCameraHorizontally(float distance);
+		void moveCameraVertically(float distance);
 
 		void setCameraPosition(float x, float y, float z);
+		void setCameraTarget(float x, float y, float z);
 
 		void rotateCameraAroundYAxis(float angle);
 		void rotateCameraAroundXAxis(float angle);
+
+		XMVECTOR getLookAtVector();
 
 		void debug(XMVECTOR pos, XMVECTOR tar, XMVECTOR up);
 		// I guess we need a method to rotate around arbitrary axis, aight?
@@ -34,7 +39,6 @@ namespace GEngine {
 		XMVECTOR m_target;
 		XMVECTOR m_up;
 
-		XMMATRIX m_translationMatrix;
 		XMMATRIX m_rotationMatrix;
 	};
 }

@@ -68,6 +68,12 @@
     <ClCompile Include="GameTimer.cpp">
       <Filter>engine</Filter>
     </ClCompile>
+    <ClCompile Include="utilities.h">
+      <Filter>engine</Filter>
+    </ClCompile>
+    <ClCompile Include="utilities.cpp">
+      <Filter>engine</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <Manifest Include="settings.manifest">
